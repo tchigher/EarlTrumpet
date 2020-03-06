@@ -3,6 +3,8 @@
 
 ## 效果图
 
+![](https://github.com/asendiLin/EarlTrumpet/blob/master/app/src/main/res/image/trumpet_screen.gif "弹幕效果图")
+
 ## 支持功能如下：
 - 可自定义弹幕的布局
 - 弹幕不会重叠
