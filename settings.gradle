@@ -1,0 +1,2 @@
+include ':app', ':trumpet'
+rootProject.name='DanmuDemo'
