@@ -38,6 +38,7 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
     init {
         holder.addCallback(this)
         holder.setFormat(PixelFormat.TRANSPARENT)
+        setZOrderOnTop(true)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
