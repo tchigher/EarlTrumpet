@@ -11,9 +11,6 @@ import kotlin.collections.ArrayList
 class TrumpetPool {
 
     private val myTag = "TrumpetPool"
-    companion object{
-        const val DEFAULT_CLEAR_THRESHOLD = 8
-    }
 
     private val visibleTrumpetList: MutableList<Trumpet> = LinkedList<Trumpet>()//当前可见的弹幕
 
@@ -21,15 +18,13 @@ class TrumpetPool {
 
     var speed = 1//速度
 
-    var maxHeight = 0
-    var maxWidth = 0
-
-    private var clearThreshold = 0
+    private var maxHeight = 0
+    private var maxWidth = 0
 
     private var lineHeight: Int = 0
     private var lines: Int = -1
-    private val lineDanmus = SparseIntArray()//记录每行的个数
-    private val lineLastDanmu = SparseArray<Trumpet>(16)//记录每行最后一个
+    private val lineTrumpets = SparseIntArray()//记录每行的个数
+    private val lineLastTrumpet = SparseArray<Trumpet>(16)//记录每行最后一个
     private val newTrumpetQueue: Queue<Trumpet> = LinkedList<Trumpet>()
 
 
@@ -84,8 +79,8 @@ class TrumpetPool {
             Log.i(myTag,"trumpet${trumpet.data} find best line is:$line")
             trumpet?.let {
                 trumpet.updateY((line * lineHeight).toFloat())
-                lineLastDanmu.put(line,it)
-                lineDanmus.put(line,lineDanmus.get(line,0)+1)
+                lineLastTrumpet.put(line,it)
+                lineTrumpets.put(line,lineTrumpets.get(line,0)+1)
                 newAddTrumpets.add(it)
             }
         }
@@ -95,14 +90,14 @@ class TrumpetPool {
     private fun getBestLine(): Int{
         //寻找空行
         for (i in 0 until lines){
-            if (lineDanmus.get(i,0) == 0){
+            if (lineTrumpets.get(i,0) == 0){
                 return i
             }
         }
 
         //找能够放进去的
         for (i in 0 until lines){
-            val trumpet = lineLastDanmu.get(i)
+            val trumpet = lineLastTrumpet.get(i)
             if (trumpet != null){
                 if (trumpet.width>0 && maxWidth - trumpet.x >= trumpet.width){
                     return i
@@ -130,7 +125,7 @@ class TrumpetPool {
     private fun updateLineRecord(trumpet: Trumpet){
         val line = trumpet.y.toInt() / lineHeight
         Log.i(myTag,"updateLineRecord line $line")
-        lineDanmus.put(line,lineDanmus.get(line,1)-1)
+        lineTrumpets.put(line,lineTrumpets.get(line,1)-1)
     }
 
     @Synchronized

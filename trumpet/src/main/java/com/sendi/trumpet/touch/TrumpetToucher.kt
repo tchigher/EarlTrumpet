@@ -4,12 +4,12 @@ import android.graphics.RectF
 import android.view.GestureDetector
 import android.view.MotionEvent
 import com.sendi.trumpet.Trumpet
-import com.sendi.trumpet.TrumpetSurfaceView
+import com.sendi.trumpet.view.TrumpetSurfaceView
 
 /**
  * 通过此类来对弹幕的点击事件进行分发
  */
-class TrumpetToucher(val trumpetView: TrumpetSurfaceView,private val boundsStrategy: IBoundsStrategy) {
+class TrumpetToucher(val trumpetView: TrumpetSurfaceView, private val boundsStrategy: IBoundsStrategy) {
     private val mTouchDelegate: GestureDetector
 
     init {

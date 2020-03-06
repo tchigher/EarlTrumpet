@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import com.sendi.trumpet.Trumpet
-import com.sendi.trumpet.TrumpetSurfaceView
+import com.sendi.trumpet.view.TrumpetSurfaceView
 import com.sendi.simple.DamuAdapter
 import com.sendi.simple.Entity
 

@@ -3,6 +3,7 @@ package com.sendi.trumpet
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import com.sendi.trumpet.view.TrumpetSurfaceView
 
 class TrumpetHandler(val trumpet: TrumpetSurfaceView, looper: Looper) : Handler(looper){
 

@@ -1,4 +1,4 @@
-package com.sendi.trumpet
+package com.sendi.trumpet.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -11,17 +11,16 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import com.sendi.trumpet.*
 import com.sendi.trumpet.touch.DefaultBoundsStrategy
 import com.sendi.trumpet.touch.IBoundsStrategy
 import com.sendi.trumpet.touch.TrumpetToucher
-import java.util.concurrent.Executors
 
 class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultStyle: Int)
     : SurfaceView(context,attributeSet,defaultStyle),SurfaceHolder.Callback{
 
     private val myTag = "TrumpetSurfaceView"
 
-    private val DANMU_EXECUTOR = Executors.newFixedThreadPool(3)
 
     constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
 

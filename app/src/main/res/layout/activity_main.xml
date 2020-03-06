@@ -12,7 +12,7 @@
       android:background="@color/colorPrimary"
       />
 
-  <com.sendi.trumpet.TrumpetSurfaceView
+  <com.sendi.trumpet.view.TrumpetSurfaceView
       android:id="@+id/danmuView"
       android:layout_width="match_parent"
       android:layout_height="250dp"/>
