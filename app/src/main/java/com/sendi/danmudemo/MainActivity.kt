@@ -6,7 +6,7 @@ import android.util.Log
 import android.widget.Button
 import com.sendi.trumpet.Trumpet
 import com.sendi.trumpet.view.TrumpetSurfaceView
-import com.sendi.simple.DamuAdapter
+import com.sendi.simple.TrumpetAdapter
 import com.sendi.simple.Entity
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mDamuView = findViewById(R.id.danmuView)
-        mDamuView.setAdapter(DamuAdapter(this))
+        mDamuView.setAdapter(TrumpetAdapter(this))
         mDamuView.openTouch(listener = object : TrumpetSurfaceView.OnTrumpetClickListener{
             override fun onClick(trumpet: Trumpet) {
                 Log.i(myTag,"onClick data is ${trumpet.data}")

@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.sendi.danmudemo.R
 
-class DamuAdapter(val context: Context) : com.sendi.trumpet.Adapter<DamuAdapter.DanmuViewHolder>() {
-    override fun bindViewHolder(viewHolder: DanmuViewHolder, data: com.sendi.trumpet.Trumpet) {
+class TrumpetAdapter(val context: Context) : com.sendi.trumpet.Adapter<TrumpetAdapter.TrumpetViewHolder>() {
+    override fun bindViewHolder(viewHolder: TrumpetViewHolder, data: com.sendi.trumpet.Trumpet) {
         data.data?.let {
             if (it is Entity){
                 viewHolder.content.text = it.content
@@ -17,17 +17,17 @@ class DamuAdapter(val context: Context) : com.sendi.trumpet.Adapter<DamuAdapter.
         }
     }
 
-    override fun onCreateViewHolder(viewType: Int): DanmuViewHolder {
+    override fun onCreateViewHolder(viewType: Int): TrumpetViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_danmu,null)
-        return DanmuViewHolder(view)
+        return TrumpetViewHolder(view)
     }
 
     override fun getSingleLineHeight(): Int {
-        return 55
+        return 80
     }
 
 
-    class DanmuViewHolder(view: View): ViewHolder(view){
+    class TrumpetViewHolder(view: View): ViewHolder(view){
         val  content: TextView = view.findViewById(R.id.content)
         val image: ImageView = view.findViewById(R.id.image)
     }
