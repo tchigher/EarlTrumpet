@@ -8,7 +8,8 @@ abstract class Adapter<VH : Adapter.ViewHolder> {
 
     private val mCacheViewHolders: Stack<VH> = Stack()
     private val mSaveViewHolder = SparseArray<VH>()
-
+    //todo:每个trumpet的id对应一个view，清除的时候，也是对应id然后清除掉view，
+    // 这样可以避免每次都要bindViewHolder和measure和layout
     fun getViewHolder(data: Trumpet): VH{
         if (mCacheViewHolders.isEmpty()){
             //以后考虑多种view类型
