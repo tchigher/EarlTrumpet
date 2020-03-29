@@ -13,6 +13,10 @@ class Trumpet {
 
     var data: Any? = null
 
+    var isMeasured: Boolean = false
+
+    var isLayout: Boolean = false
+
 
     fun left(): Float{
         return x

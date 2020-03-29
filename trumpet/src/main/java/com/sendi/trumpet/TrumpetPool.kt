@@ -54,13 +54,9 @@ class TrumpetPool {
             val viewHolder = mAdapter.getViewHolder(trumpet)
             val itemView = viewHolder.itemView
             canvas.save()
-            itemView.measure(View.MeasureSpec.makeMeasureSpec(canvas.width, View.MeasureSpec.AT_MOST), View.MeasureSpec.makeMeasureSpec(canvas.height, View.MeasureSpec.AT_MOST))
-            val width = itemView.measuredWidth
-            val height = itemView.measuredHeight
-            trumpet.width = width.toFloat()
-            trumpet.height = height.toFloat()
+            mAdapter.measure(canvas.width,canvas.height,trumpet)
             canvas.translate(getX(trumpet), getY(trumpet))
-            itemView.layout(0,0,width,height)
+            mAdapter.layout(trumpet)
             itemView.draw(canvas)
             canvas.restore()
         }
@@ -118,6 +114,7 @@ class TrumpetPool {
             if (trumpet.isOutside()){
                 iterator.remove()
                 updateLineRecord(trumpet)
+                mAdapter.recycle(trumpet)
             }
         }
     }

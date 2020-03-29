@@ -11,21 +11,38 @@ abstract class Adapter<VH : Adapter.ViewHolder> {
     //todo:每个trumpet的id对应一个view，清除的时候，也是对应id然后清除掉view，
     // 这样可以避免每次都要bindViewHolder和measure和layout
     fun getViewHolder(data: Trumpet): VH{
-        if (mCacheViewHolders.isEmpty()){
-            //以后考虑多种view类型
-            val type = getViewType(data)
-            val viewHolder = onCreateViewHolder(type)
-            mCacheViewHolders.push(viewHolder)
-            bindViewHolder(viewHolder, data)
-
+        var viewHolder = mSaveViewHolder[data.index]
+        if (viewHolder !=null){
             return viewHolder
+        }else{
+            val type = getViewType(data)
+            viewHolder = onCreateViewHolder(type)
+            bindViewHolder(viewHolder, data)
+            mSaveViewHolder.put(data.index,viewHolder)
         }
-
-        val cViewHolder = mCacheViewHolders.peek()
-        bindViewHolder(cViewHolder,data)
-        return cViewHolder
+        return viewHolder
     }
 
+    fun measure(width: Int,height: Int,trumpet: Trumpet){
+        val vh = mSaveViewHolder[trumpet.index]
+        if (!trumpet.isMeasured && vh!=null){
+            vh.itemView.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.AT_MOST),
+                View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST))
+            trumpet.isMeasured = true
+            val iw = vh.itemView.measuredWidth
+            val ih = vh.itemView.measuredHeight
+            trumpet.width = iw.toFloat()
+            trumpet.height = ih.toFloat()
+        }
+    }
+
+    fun layout(trumpet: Trumpet){
+        val vh = mSaveViewHolder[trumpet.index]
+        if (!trumpet.isLayout && vh!=null){
+            vh.itemView.layout(0,0,trumpet.width.toInt(),trumpet.height.toInt())
+            trumpet.isLayout = true
+        }
+    }
 
     fun getViewType(data: Trumpet): Int{
         return 0
@@ -40,7 +57,7 @@ abstract class Adapter<VH : Adapter.ViewHolder> {
 
     abstract class ViewHolder(val itemView: View)
 
-    private fun recycle(){
-        //todo:这里进行回收操作
+    fun recycle(trumpet: Trumpet){
+        mSaveViewHolder.delete(trumpet.index)
     }
 }
