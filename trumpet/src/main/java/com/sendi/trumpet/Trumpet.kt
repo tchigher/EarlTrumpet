@@ -5,6 +5,7 @@ class Trumpet {
 
     var x: Float = -1f
     var y: Float = -1f
+
     var height: Float =0f
     var width: Float =0f
     /**
@@ -12,8 +13,6 @@ class Trumpet {
      * 默认情况下不要手动去设置
      */
     var index: Int = -1
-
-    var isVisiable = false
 
     var data: Any? = null
 
