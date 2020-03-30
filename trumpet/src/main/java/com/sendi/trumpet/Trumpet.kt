@@ -7,6 +7,10 @@ class Trumpet {
     var y: Float = -1f
     var height: Float =0f
     var width: Float =0f
+    /**
+     * index不允许有重复，否则会出现弹幕异常消失的情况
+     * 默认情况下不要手动去设置
+     */
     var index: Int = -1
 
     var isVisiable = false

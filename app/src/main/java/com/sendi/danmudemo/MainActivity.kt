@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_add_one).setOnClickListener {
             val trumpet = Trumpet()
             trumpet.data = Entity("one this is content --------$index",getRes(index))
-            ++index
             mDamuView.addTrumpet(trumpet)
         }
 
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         val list = ArrayList<Trumpet>()
         for(i in 0 until 50){
             val danmu = Trumpet()
-            danmu.index = i
             danmu.data = Entity("group this is content $i",getRes(i))
             list.add(danmu)
         }

@@ -4,7 +4,6 @@ import android.graphics.Canvas
 import android.util.Log
 import android.util.SparseArray
 import android.util.SparseIntArray
-import android.view.View
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,6 +25,7 @@ class TrumpetPool {
     private val lineTrumpets = SparseIntArray()//记录每行的个数
     private val lineLastTrumpet = SparseArray<Trumpet>(16)//记录每行最后一个
     private val newTrumpetQueue: Queue<Trumpet> = LinkedList<Trumpet>()
+    private var lastTrumpet: Trumpet? = null
 
 
     fun setAdapter(adapter: Adapter<*>){
@@ -129,12 +129,21 @@ class TrumpetPool {
     fun addTrumpet(trumpet: Trumpet){
         trumpet.x = maxWidth.toFloat()
         newTrumpetQueue.offer(trumpet)
+        initIndexIfNeed(trumpet)
+        lastTrumpet = trumpet
         Log.i(myTag,"offer new trumpet ${trumpet.data}")
     }
 
     @Synchronized
     fun addTrumpets(trumpets:List<Trumpet>){
         trumpets.forEach { addTrumpet(it) }
+    }
+
+    private fun initIndexIfNeed(trumpet: Trumpet){
+        if (trumpet.index == -1){
+            val lastIndex = lastTrumpet?.index?:0
+            trumpet.index = lastIndex + 1
+        }
     }
 
     private fun getX(trumpet: Trumpet): Float{
