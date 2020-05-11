@@ -48,7 +48,7 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
         isPause = true
-        quit()
+//        quit()
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
