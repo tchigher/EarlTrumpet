@@ -162,4 +162,9 @@ class TrumpetPool {
     fun visibleTrumpets(): List<Trumpet>{
         return ArrayList(visibleTrumpetList)
     }
+
+    fun quitClear(){
+        visibleTrumpetList.clear()
+        mAdapter.quitClear()
+    }
 }

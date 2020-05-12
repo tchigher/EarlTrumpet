@@ -59,4 +59,8 @@ abstract class Adapter<VH : Adapter.ViewHolder> {
     fun recycle(trumpet: Trumpet){
         mSaveViewHolder.delete(trumpet.index)
     }
+
+    fun quitClear(){
+        mSaveViewHolder.clear()
+    }
 }

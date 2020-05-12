@@ -73,6 +73,7 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
     private fun quit(){
         val message = mDrawHandler.obtainMessage(TrumpetHandler.QUIT)
         mDrawHandler.sendMessage(message)
+        mTrumpetPool.quitClear()
     }
 
     fun config(config: TrumpetConfig){
