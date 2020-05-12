@@ -80,6 +80,10 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
         mTrumpetPool.speed = config.speed
     }
 
+    fun setSpeed(speed: Int){
+        mTrumpetPool.speed = speed
+    }
+
     fun start(){
         checkDrawHandler()
         val startMsg = mDrawHandler.obtainMessage(TrumpetHandler.START)

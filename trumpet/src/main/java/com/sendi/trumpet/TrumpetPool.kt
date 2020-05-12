@@ -54,7 +54,7 @@ class TrumpetPool {
             val viewHolder = mAdapter.getViewHolder(trumpet)
             val itemView = viewHolder.itemView
             canvas.save()
-            mAdapter.measure(canvas.width,canvas.height,trumpet)
+            mAdapter.measure(-1,-1,trumpet)
             canvas.translate(getX(trumpet), getY(trumpet))
             mAdapter.layout(trumpet)
             itemView.draw(canvas)
