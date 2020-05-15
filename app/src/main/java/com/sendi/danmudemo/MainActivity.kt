@@ -1,8 +1,10 @@
 package com.sendi.danmudemo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.Button
 import com.sendi.trumpet.Trumpet
 import com.sendi.trumpet.view.TrumpetSurfaceView
@@ -12,14 +14,15 @@ import com.sendi.simple.Entity
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mDamuView: TrumpetSurfaceView
-
+    private lateinit var rootView: ViewGroup
     private val myTag = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mDamuView = findViewById(R.id.danmuView)
-        mDamuView.setAdapter(TrumpetAdapter(this))
+        rootView = findViewById(R.id.root)
+        mDamuView.setAdapter(TrumpetAdapter(this,rootView))
         mDamuView.openTouch(listener = object : TrumpetSurfaceView.OnTrumpetClickListener{
             override fun onClick(trumpet: Trumpet) {
                 Log.i(myTag,"onClick data is ${trumpet.data}")
@@ -35,7 +38,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_add_more).setOnClickListener {
             mDamuView.addTrumpets(getDanmuList())
         }
-        mDamuView.start()
+
+        findViewById<Button>(R.id.btn_to_test).setOnClickListener {
+            startActivity(Intent(this,TestActivity::class.java))
+        }
+
+        mDamuView.prepare()
     }
 
     private fun getDanmuList(): List<Trumpet>{
@@ -59,5 +67,24 @@ class MainActivity : AppCompatActivity() {
             4 -> R.drawable.icon5
             else -> R.drawable.heart
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mDamuView.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mDamuView.pause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mDamuView.quit()
     }
 }
