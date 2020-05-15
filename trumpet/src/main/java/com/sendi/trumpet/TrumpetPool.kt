@@ -15,7 +15,7 @@ class TrumpetPool {
 
     private lateinit var mAdapter: Adapter<*>
 
-    var speed = 1//速度
+    var speed: Float = 1f//速度
 
     private var maxHeight = 0
     private var maxWidth = 0

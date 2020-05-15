@@ -15,6 +15,7 @@ import com.sendi.trumpet.*
 import com.sendi.trumpet.touch.DefaultBoundsStrategy
 import com.sendi.trumpet.touch.IBoundsStrategy
 import com.sendi.trumpet.touch.TrumpetToucher
+import java.lang.Exception
 
 class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultStyle: Int)
     : SurfaceView(context,attributeSet,defaultStyle),SurfaceHolder.Callback{
@@ -28,7 +29,7 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
 
     private var mTrumpetPool: TrumpetPool = TrumpetPool()
 
-    private lateinit var mDrawHandler: TrumpetHandler
+    private var mDrawHandler: TrumpetHandler? = null
 
     private var trumpetToucher: TrumpetToucher? = null
 
@@ -42,17 +43,22 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
-        Log.i(myTag,"wid: $width hei: $height")
+        Log.i(myTag,"surfaceChanged wid: $width hei: $height")
         mTrumpetPool.updateWidthAndHeight(width,height)
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
+        Log.i(myTag,"surfaceDestroyed")
+        mDrawHandler?.removeMessages(TrumpetHandler.UPDATE)
+        val message = mDrawHandler?.obtainMessage(TrumpetHandler.QUIT)
+        mDrawHandler?.sendMessage(message)
         isPause = true
-//        quit()
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
-        prepare()
+        Log.i(myTag,"surfaceCreated")
+        start()
+        isPause = false
     }
 
     fun setAdapter(adapter: Adapter<*>){
@@ -67,13 +73,30 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
         mTrumpetPool.addTrumpets(trumpets)
     }
 
-    private fun prepare(){
+    fun prepare(){
+        checkDrawHandler()
     }
 
-    private fun quit(){
-        val message = mDrawHandler.obtainMessage(TrumpetHandler.QUIT)
-        mDrawHandler.sendMessage(message)
+    fun quit(){
+        mDrawHandler?.removeMessages(TrumpetHandler.UPDATE)
+        val message = mDrawHandler?.obtainMessage(TrumpetHandler.QUIT)
+        mDrawHandler?.sendMessage(message)
         mTrumpetPool.quitClear()
+        holder.surface.release()
+        holder.removeCallback(this)
+    }
+
+    fun clear(){
+        try {
+            val canvas = holder.lockCanvas()
+            if (canvas != null) {
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                holder.unlockCanvasAndPost(canvas)
+            }
+        }catch (e: Exception){
+            Log.i(myTag,"clear throw exception:${e.message}")
+        }
+
     }
 
     fun config(config: TrumpetConfig){
@@ -81,18 +104,18 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
         mTrumpetPool.speed = config.speed
     }
 
-    fun setSpeed(speed: Int){
+    fun setSpeed(speed: Float){
         mTrumpetPool.speed = speed
     }
 
-    fun start(){
+    private fun start(){
         checkDrawHandler()
-        val startMsg = mDrawHandler.obtainMessage(TrumpetHandler.START)
-        mDrawHandler.sendMessage(startMsg)
+        val startMsg = mDrawHandler?.obtainMessage(TrumpetHandler.START)
+        mDrawHandler?.sendMessage(startMsg)
     }
 
     private fun checkDrawHandler(){
-        if (!::mDrawHandler.isInitialized){
+        if (mDrawHandler == null){
             val thread = HandlerThread("draw#thread")
             thread.start()
             mDrawHandler = TrumpetHandler(this, thread.looper)
@@ -103,12 +126,39 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
         mTrumpetPool.draw(canvas)
     }
 
+    fun pause(){
+        val message = mDrawHandler?.obtainMessage(TrumpetHandler.CLEAR)
+        mDrawHandler?.sendMessage(message)
+
+    }
+
+    fun resume(){
+        val message = mDrawHandler?.obtainMessage(TrumpetHandler.RESUME)
+        mDrawHandler?.sendMessage(message)
+    }
+
     fun draw(){
-        val canvas = holder.lockCanvas()
-        if (canvas != null) {
-            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-            drawTrumpet(canvas)
-            holder.unlockCanvasAndPost(canvas)
+        if (isPause){
+            return
+        }
+        var canvas: Canvas? = null
+        try {
+            canvas = holder.lockCanvas()
+            if (canvas != null) {
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                drawTrumpet(canvas)
+
+            }
+        }catch (e: Exception){
+            Log.i(myTag,"draw throw exception:${e.message}")
+        }finally {
+            try {
+                if (canvas != null){
+                    holder.unlockCanvasAndPost(canvas)
+                }
+            }catch (e: Exception){
+                Log.i(myTag,"draw throw exception:${e.message}")
+            }
         }
     }
 
@@ -116,7 +166,7 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
         return mTrumpetPool.visibleTrumpets()
     }
 
-    fun openTouch(boundsStrategy: IBoundsStrategy = DefaultBoundsStrategy(),listener: OnTrumpetClickListener){
+    fun openTouch(boundsStrategy: IBoundsStrategy = DefaultBoundsStrategy(), listener: OnTrumpetClickListener){
         trumpetToucher = TrumpetToucher(this,boundsStrategy)
         this.onTrumpetClickListener = listener
     }

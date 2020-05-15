@@ -2,10 +2,10 @@ package com.sendi.trumpet
 
 class TrumpetConfig {
     companion object{
-        const val DEFAULT_SPEED = 1
+        const val DEFAULT_SPEED = 1F
     }
 
-    val speed: Int
+    val speed: Float
     val lineHeight: Int
 
     constructor(builder: Builder){
@@ -18,7 +18,7 @@ class TrumpetConfig {
 
         var speed= DEFAULT_SPEED
         var lineHeight = 0
-        fun speed(speed:  Int): Builder {
+        fun speed(speed:  Float): Builder {
             this.speed = speed
             return this
         }
