@@ -1,5 +1,4 @@
 package com.sendi.trumpet.view
-
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -36,6 +35,10 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
     @Volatile
     private var isPause = false
 
+    private val lock = Object()
+
+    private var needNotify = true
+
     init {
         holder.addCallback(this)
         holder.setFormat(PixelFormat.TRANSPARENT)
@@ -67,10 +70,26 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
 
     fun addTrumpet(trumpet: Trumpet){
         mTrumpetPool.addTrumpet(trumpet)
+        notifyDraw()
     }
 
     fun addTrumpets(trumpets: List<Trumpet>){
         mTrumpetPool.addTrumpets(trumpets)
+        notifyDraw()
+    }
+
+    private fun notifyDraw(){
+        try {
+            synchronized(lock) {
+                if (needNotify){
+                    lock.notify()
+                    needNotify = false
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(myTag,"notify draw->throw exception:${e.message} ")
+            e.printStackTrace()
+        }
     }
 
     fun prepare(){
@@ -79,11 +98,10 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
 
     fun quit(){
         mDrawHandler?.removeMessages(TrumpetHandler.UPDATE)
-        val message = mDrawHandler?.obtainMessage(TrumpetHandler.QUIT)
-        mDrawHandler?.sendMessage(message)
         mTrumpetPool.quitClear()
         holder.surface.release()
         holder.removeCallback(this)
+        notifyDraw()
     }
 
     fun clear(){
@@ -141,6 +159,20 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
         if (isPause){
             return
         }
+
+        synchronized(lock) {
+            if(mTrumpetPool.isEmpty){
+                try {
+                    Log.i(myTag,"trumpet pool null,no need draw")
+                    needNotify = true
+                    lock.wait()
+                } catch (e: Exception) {
+                    Log.e(myTag,"no need draw wait->throw exception:${e.message} ")
+                    e.printStackTrace()
+                }
+            }
+        }
+
         var canvas: Canvas? = null
         try {
             canvas = holder.lockCanvas()

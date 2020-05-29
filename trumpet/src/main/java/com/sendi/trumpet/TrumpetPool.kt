@@ -27,6 +27,9 @@ class TrumpetPool {
     private val newTrumpetQueue: Queue<Trumpet> = LinkedList<Trumpet>()
     private var lastTrumpet: Trumpet? = null
 
+    @Volatile
+    var isEmpty: Boolean = true
+
 
     fun setAdapter(adapter: Adapter<*>){
         this.mAdapter = adapter
@@ -58,6 +61,7 @@ class TrumpetPool {
             canvas.translate(getX(trumpet), getY(trumpet))
             mAdapter.layout(trumpet)
             itemView.draw(canvas)
+            Log.i(myTag,"draw X:${trumpet.x} Y:${trumpet.y} hc:${trumpet.hashCode()}")
             canvas.restore()
         }
         tryClear()
@@ -117,6 +121,7 @@ class TrumpetPool {
                 mAdapter.recycle(trumpet)
             }
         }
+        isEmpty = newTrumpetQueue.isEmpty() && visibleTrumpetList.isEmpty()
     }
 
     private fun updateLineRecord(trumpet: Trumpet){
@@ -132,6 +137,7 @@ class TrumpetPool {
         initIndexIfNeed(trumpet)
         lastTrumpet = trumpet
         Log.i(myTag,"offer new trumpet ${trumpet.data}")
+        isEmpty = false
     }
 
     @Synchronized

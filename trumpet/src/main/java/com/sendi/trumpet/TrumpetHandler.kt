@@ -32,18 +32,7 @@ class TrumpetHandler(val trumpet: TrumpetSurfaceView, looper: Looper) : Handler(
             }
             UPDATE ->{
                 removeMessages(UPDATE)
-                val startTime = System.currentTimeMillis()
                 trumpet.draw()
-                val endTime = System.currentTimeMillis()
-                val drawTime = endTime - startTime
-                if (drawTime < 16) {
-                    Log.i(myTag,"drawTime:$drawTime")
-                    try {
-                        Thread.sleep(16 - drawTime)
-                    }catch (e: InterruptedException){
-                        Log.i(myTag,"update sleep throw InterruptedException.")
-                    }
-                }
                 if (!quit){
                     val message = obtainMessage(UPDATE)
                     sendMessage(message)
