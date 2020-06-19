@@ -32,6 +32,8 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
 
     private var trumpetToucher: TrumpetToucher? = null
 
+    private val mDrawThread = HandlerThread("draw#thread")
+
     @Volatile
     private var isPause = false
 
@@ -102,6 +104,7 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
         holder.surface.release()
         holder.removeCallback(this)
         notifyDraw()
+        mDrawThread.quit()
     }
 
     fun clear(){
@@ -134,9 +137,8 @@ class TrumpetSurfaceView(context: Context, attributeSet: AttributeSet?, defaultS
 
     private fun checkDrawHandler(){
         if (mDrawHandler == null){
-            val thread = HandlerThread("draw#thread")
-            thread.start()
-            mDrawHandler = TrumpetHandler(this, thread.looper)
+            mDrawThread.start()
+            mDrawHandler = TrumpetHandler(this, mDrawThread.looper)
         }
     }
 
